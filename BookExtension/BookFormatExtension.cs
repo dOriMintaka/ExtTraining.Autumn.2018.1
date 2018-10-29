@@ -40,6 +40,7 @@ namespace BookExtension
                 format = "Custom";
             }
 
+            // taking the first letter from the specifier
             string thisFormat =
                 format.Length == 1 ? format.ToUpperInvariant() : format.Substring(0, 1).ToUpperInvariant();
             if (thisFormat != "C")

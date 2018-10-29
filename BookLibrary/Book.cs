@@ -55,6 +55,12 @@ namespace BookLibrary
 
         public decimal Price { get; private set; }
 
+        /// <summary>
+        /// Returns string representation of the book
+        /// </summary>
+        /// <param name="format">Format specifier</param>
+        /// <param name="formatProvider">An instance of IFormatProvider</param>
+        /// <returns>Returns string representation of the current instance of the book</returns>
         public string ToString(string format, IFormatProvider formatProvider)
         {
             // handling empty format as general
@@ -63,11 +69,13 @@ namespace BookLibrary
                 format = "G";
             }
 
+            // handling null provider as current culture
             if (formatProvider == null)
             {
                 formatProvider = CultureInfo.CurrentCulture;
             }
 
+            // taking the first letter from the format specifier
             string thisFormat = format.Length == 1 ? format : format.Substring(0, 1);
             switch (thisFormat.ToUpperInvariant())
             {
