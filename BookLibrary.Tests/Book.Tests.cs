@@ -1,10 +1,15 @@
 ﻿namespace BookLibrary.Tests
 {
+    using System;
+    using System.Globalization;
+
     using NUnit.Framework;
 
     [TestFixture]
     public class BookTests
     {
+        public static CultureInfo cultureInfo = new CultureInfo("de-DE");
+
         [TestCase("t", ExpectedResult = "Book record: C# in Depth")]
         [TestCase("a", ExpectedResult = "Book record: Jon Skeet, C# in Depth")]
         [TestCase("g", ExpectedResult = "Book record: Jon Skeet, C# in Depth, 2019")]
@@ -16,6 +21,13 @@
         {
             Book book = new Book("C# in Depth", "Jon Skeet", 2019, "Manning", 4, 900, 40);
             return book.ToString(format, null);
+        }
+
+        [Test]
+        public void ToString_TestDifferentCultures_ReturnDifferentResult()
+        {
+            Book book = new Book("C# in Depth", "Jon Skeet", 2019, "Manning", 4, 900, 40);
+            Assert.AreNotEqual(book.ToString("u", new CultureInfo("de-DE")), book.ToString("u", new CultureInfo("en-US")));
         }
     }
 }
