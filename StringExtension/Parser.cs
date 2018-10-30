@@ -10,6 +10,8 @@ namespace StringExtension
         public static int ToDecimal(this string source, int @base)
         {
             const int NUMBEROFDIGITS = 10;
+            const string NUMBERS = "0123456789ABCDF";
+
             if (source == null)
             {
                 throw new ArgumentNullException(nameof(source), "Null source string!");
@@ -23,21 +25,15 @@ namespace StringExtension
             int result = 0, index = source.Length - 1;
             string number = source.ToLowerInvariant();
 
-            // generating regex pattern for numbers with current base
-            StringBuilder stringBuilder = new StringBuilder("[");
-            for (int i = 0; i < @base; i++)
-            {
-                stringBuilder.Append(i.ToString("x"));
-            }
-
-            stringBuilder.Append("]+");
-            string pattern = stringBuilder.ToString();
-            Regex regex = new Regex(pattern);
+            string pattern = NUMBERS.Substring(0, @base);
 
             // checking if source string matches the pattern
-            if (!regex.IsMatch(number) || regex.Match(number).Value != number)
+            for (int i = 0; i < source.Length; i++)
             {
-                throw new ArgumentException("Incorrect source string!", nameof(source));
+                if (pattern.IndexOf(char.ToUpper(source[i])) == -1)
+                {
+                    throw new ArgumentException("Invalid source string!", nameof(source));
+                }
             }
 
             int radix = 1;
@@ -69,7 +65,7 @@ namespace StringExtension
                 }
                 catch (OverflowException e)
                 {
-                    throw new ArgumentException("Too big number!", nameof(source));
+                    throw new ArgumentException("Too big number!", nameof(source), e);
                 }
 
                 index--;
