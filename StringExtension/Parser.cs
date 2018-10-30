@@ -10,7 +10,7 @@ namespace StringExtension
         public static int ToDecimal(this string source, int @base)
         {
             const int NUMBEROFDIGITS = 10;
-            const string NUMBERS = "0123456789ABCDF";
+            const string NUMBERS = "0123456789ABCDEF";
 
             if (source == null)
             {
@@ -22,42 +22,28 @@ namespace StringExtension
                 throw new ArgumentOutOfRangeException(nameof(@base), "Base must be between 2 and 16 inclusively!");
             }
 
-            int result = 0, index = source.Length - 1;
+            int result = 0;
             string number = source.ToLowerInvariant();
 
             string pattern = NUMBERS.Substring(0, @base);
 
-            // checking if source string matches the pattern
-            for (int i = 0; i < source.Length; i++)
+            int radix = 1;
+
+            // getting current digit
+            for (int i = source.Length - 1; i >= 0; i--)
             {
-                if (pattern.IndexOf(char.ToUpper(source[i])) == -1)
+                int digit = pattern.IndexOf(char.ToUpper(source[i]));
+                if (digit == -1)
                 {
                     throw new ArgumentException("Invalid source string!", nameof(source));
                 }
-            }
 
-            int radix = 1;
-
-            while (index >= 0)
-            {
-                // getting current digit
-                int digit;
-                if (number[index] - '0' < NUMBEROFDIGITS)
-                {
-                    digit = number[index] - '0';
-                }
-                else
-                {
-                    digit = number[index] - 'a' + NUMBEROFDIGITS;
-                }
-
-                // checking if result can be stored in int number
                 try
                 {
                     checked
-                    { 
+                    {
                         result += radix * digit;
-                        if (index > 0)
+                        if (i > 0)
                         {
                             radix *= @base;
                         }
@@ -67,8 +53,6 @@ namespace StringExtension
                 {
                     throw new ArgumentException("Too big number!", nameof(source), e);
                 }
-
-                index--;
             }
 
             return result;
